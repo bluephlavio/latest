@@ -1,0 +1,16 @@
+LICENSE
+MANIFEST.in
+README.rst
+setup.py
+latest/__init__.py
+latest/__main__.py
+latest/core.py
+latest/shortcut.py
+latest/util.py
+latest.egg-info/PKG-INFO
+latest.egg-info/SOURCES.txt
+latest.egg-info/dependency_links.txt
+latest.egg-info/entry_points.txt
+latest.egg-info/requires.txt
+latest.egg-info/top_level.txt
+test/test_util.py
