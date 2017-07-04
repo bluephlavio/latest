@@ -69,6 +69,8 @@ def is_tensor(obj):
     return (not is_scalar(obj)) and (not is_vector(obj))
 
 
+
+
 def select(data, path, sep='/'):
     out = data
     if path:

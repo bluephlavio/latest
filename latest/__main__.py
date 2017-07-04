@@ -3,8 +3,9 @@ import os
 import yaml
 import latest
 
-from latest.shortcut import render
+from latest.shortcuts import render
 from latest.util import templates_dir
+
 
 def main():
 

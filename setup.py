@@ -1,6 +1,8 @@
 from setuptools import setup
 from os import path
 
+import latest
+
 here = path.abspath(path.dirname(__file__))
 
 with open(path.join(here, 'README.rst')) as f:
@@ -8,11 +10,17 @@ with open(path.join(here, 'README.rst')) as f:
 
 setup(
     name='latest',
-    version='0.0.1',
+    version=latest.__version__,
     description='A LaTeX-oriented template engine.',
     long_description=long_description,
     author='Flavio Grandin',
     author_email='flavio.grandin@gmail.com',
+    setup_requires=[
+        'pytest-runner',
+    ],
+    tests_require=[
+        'pytest',
+    ],
     install_requires=[
         'pyyaml',
     ],
@@ -26,7 +34,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python',
         ],
     keywords='latex template engine',
     packages=['latest'],

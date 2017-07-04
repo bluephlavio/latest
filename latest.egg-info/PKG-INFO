@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: latest
-Version: 0.0.1
+Version: 0.0.2
 Summary: A LaTeX-oriented template engine.
 Home-page: https://github.com/bluePhlavio/latest
 Author: Flavio Grandin
@@ -19,4 +19,4 @@ Classifier: Intended Audience :: Science/Research
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Natural Language :: English
 Classifier: Operating System :: OS Independent
-Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python

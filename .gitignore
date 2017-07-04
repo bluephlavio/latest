@@ -1,7 +1,27 @@
+# packages/installer info
+*.egg
+*.egg-info
 build
 dist
+eggs
+sdist
+develop-eggs
 
+# compiled files
 __pycache__
-*.pyo
+*.py[cod]
+*.o
+*.so
 
+# sphinx
+docs/api
+docs/_build
+
+# pycharm
+.idea
+
+# other
+.cache
+.project
+.tox
 *~
