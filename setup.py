@@ -1,26 +1,48 @@
 from setuptools import setup
-from os import path
+from setuptools.command.test import test as TestCommand
+import os.path
+import sys
 
 import latest
 
-here = path.abspath(path.dirname(__file__))
 
-with open(path.join(here, 'README.rst')) as f:
+here = os.path.abspath(os.path.dirname(__file__))
+
+
+with open(os.path.join(here, 'README.rst')) as f:
     long_description = f.read()
 
+
+
+class Tox(TestCommand):
+
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+
+    def run_tests(self):
+        import tox
+        errcode = tox.cmdline(self.test_args)
+        sys.exit(errcode)
+
+
+
 setup(
-    name='latest',
+    name=latest.__project__,
     version=latest.__version__,
     description='A LaTeX-oriented template engine.',
     long_description=long_description,
     author='Flavio Grandin',
     author_email='flavio.grandin@gmail.com',
-    setup_requires=[
-        'pytest-runner',
-    ],
     tests_require=[
-        'pytest',
+        'tox',
     ],
+    cmdclass = {
+        'test': Tox
+    },
     install_requires=[
         'pyyaml',
     ],

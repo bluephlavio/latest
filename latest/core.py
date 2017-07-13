@@ -1,124 +1,39 @@
-import os
-import sys
-import configparser
 import re
-import functools
-import yaml
-import copy
-import argparse
-from functools import *
 
-from latest.util import *
+from .util import select
+from .config import config as Config
+from .exceptions import *
 
 
-
-class Expr(object):
-
-
-    def __init__(self, expr):
-        self.parse(expr)
-
-
-    def get(self):
-        return self.__expr
+def eval_code(code, ctx, config=Config):
+    try:
+        result = eval(code, ctx)
+        return str(result)
+    except SyntaxError:
+        raise CodeError
+    except NameError:
+        raise ContextError
 
 
-    def parse(self, expr):
-        self.__expr = expr
+def eval_expr(expr, ctx, config=Config):
+    frags = re.split(config.code_regex, expr)
+    return str().join(map(lambda i, s: eval_code(s, ctx) if i % 2 == 1 else s, range(len(frags)), frags))
 
 
-    def bind(self, glob, loc):
-        result = self.__expr
-        for m in re.finditer(python_regex(), self.get()):
-            to_repl = re.escape(m.group())
-            g, l = globals(), locals()
-            g.update(copy.deepcopy(glob))
-            l.update(copy.deepcopy(loc))
-            repl_with = str(eval(m.group(1), g, l))
-            result = re.sub(to_repl, repl_with, result)
-        return repr(result)[1:-1]
+def eval_block(block, ctx, config=Config):
+    m = re.match(config.inner_block_regex, block)
+    if m:
+        ns = m.group(config._NS_TAG)
+        expr = m.group(config._EXPR_TAG)
+        ctx = select(ctx, ns, sep=config.ns_operator)
+        return eval_expr(expr, ctx)
+    else:
+        return eval_expr(block, ctx)
 
 
-    expr = property(get, parse)
+def eval_template(template, ctx, config=Config):
+    frags = re.split(config.outer_block_regex, template)
+    return str().join(map(lambda i, s: eval_block(s, ctx) if i % 2 == 1 else s, range(len(frags)), frags))
 
 
-
-class Block(object):
-
-
-    def __init__(self, block):
-        self.parse(block)
-
-
-    def get(self):
-        return self.__block['code']
-
-
-    def parse(self, block):
-        self.__block = {'code': block.strip(block_wrapper())}
-        parts = self.get().split(namespace_operator())
-        self.__block['namespace'] = namespace_operator().join(parts[:-1])
-        self.__block['expr'] = Expr(parts[-1])
-
-
-    def namespace(self):
-        return self.__block['namespace']
-
-
-    def expr(self):
-        return self.__block['expr']
-
-
-    def bind(self, data):
-        glob = data
-        loc = select(data, self.namespace(), namespace_operator())
-        return '\n'.join(self.expr().bind(glob, l) for l in loc)
-
-
-    block = property(get, parse)
-
-
-
-class Doc(object):
-
-
-    def __init__(self, doc):
-        self.parse(doc)
-
-
-    def get(self):
-        return self.__doc['code']
-
-
-    def parse(self, doc):
-        self.__doc = {'code': doc, 'blocks': []}
-        for m in re.finditer(block_regex(), doc):
-            self.__doc['blocks'].append(Block(m.group()))
-
-
-    def bind(self, data):
-        result = self.get()
-        for m in re.finditer(block_regex(), self.get()):
-            to_repl = re.escape(m.group())
-            repl_with = Block(m.group()).bind(data)
-            result = re.sub(to_repl, repl_with, result)
-        return result
-
-
-    doc = property(get, parse)
-
-
-
-class LatestError(Exception):
-    pass
-
-
-
-class ParserError(LatestError):
-    pass
-
-
-
-class BindingError(LatestError):
-    pass
 

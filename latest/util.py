@@ -1,91 +1,37 @@
-import os, configparser, re
-
-import latest
-
-
-def path(loc):
-    return os.path.abspath(os.path.expanduser(loc))
-
-
-def config_dir():
-    return path('~/.' + latest.APP + '/')
-
-
-def templates_dir():
-    return os.path.join(config_dir(), 'templates/')
-
-
-def config_file():
-    return os.path.join(config_dir(), latest.APP + '.cfg')
-
-
-def config():
-    parser = configparser.RawConfigParser(delimiters=('=',))
-    parser.read(config_file())
-    return parser
-
-
-def getopt(section, key, default):
-    try:
-        parser = config()
-        return parser[section][key]
-    except configparser.Error:
-        return default
-
-
-def python_wrapper():
-    return getopt('lang', 'python_wrapper', '$')
-
-
-def block_wrapper():
-    return getopt('lang', 'block_wrapper', '%')
-
-
-def namespace_operator():
-    return getopt('lang', 'namespace', ':')
-
-
-def wrap(string, char):
-    return char + string + char
-
-
-def python_regex():
-    return wrap('(.*?)', re.escape(python_wrapper()))
-
-
-def block_regex():
-    return wrap('(.*?)', re.escape(block_wrapper()))
+import os.path
 
 
 def is_scalar(obj):
-    return isinstance(obj, (str, int, float, long, bool))
+    return isinstance(obj, (bool, int, float, complex, str))
 
 
 def is_vector(obj):
-    return isinstance(obj, (list, tuple))
+    return isinstance(obj, (set, frozenset, tuple, list)) and (not is_scalar(obj))
 
 
 def is_tensor(obj):
     return (not is_scalar(obj)) and (not is_vector(obj))
 
 
+def path(location):
+    return os.path.abspath(os.path.expanduser(location))
 
 
 def select(data, path, sep='/'):
     out = data
     if path:
         for key in path.strip(sep).split(sep):
-            if is_vector(out):
-                out = [item[key] for item in out]
-            else:
-                out = out[key]
-        if not is_vector(out):
-            out = [out]
-    else:
-        out = [data]
-    for i in range(len(out)):
-        out[i]['_index'] = i
-        out[i]['_value'] = out[i]
+            out = out[key]
     return out
+
+
+def getopt(parser, section, key, default):
+    try:
+        if hasattr(parser, '__getitem__'):
+            return parser[section][key]
+        else:
+            return parser.get(section, key)
+    except:
+        return default
 
 
