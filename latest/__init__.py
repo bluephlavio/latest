@@ -1,4 +1,12 @@
+""":mod:`latest` LaTeX-oriented template engine.
+
+
+"""
+
+
+
 __project__ = 'latest'
-__version__ = '0.0.2'
+__release__ = '0.1.1'
+__version__ = '.'.join(__release__.split('.')[:2])
 
 
