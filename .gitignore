@@ -1,6 +1,7 @@
 # packages/installer info
-*.egg[s]
-*.egg-info
+*.egg
+*.eggs/
+*.egg-info/
 build
 dist
 eggs
@@ -23,5 +24,6 @@ docs/_build
 # other
 .cache
 .project
+.coverage
 .tox
 *~
