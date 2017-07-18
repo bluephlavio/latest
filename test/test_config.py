@@ -7,6 +7,8 @@ except:
 
 import pytest
 
+from latest.util import path
+
 
 def test_config(config):
     assert config.templates_dir == '~/.latest/templates/'

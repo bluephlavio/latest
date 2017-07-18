@@ -67,4 +67,3 @@ test/test_config.py
 test/test_core.py
 test/test_shortcuts.py
 test/test_util.py
-test/res/test.cfg

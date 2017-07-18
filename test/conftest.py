@@ -12,7 +12,7 @@ def res_dir():
 
 @pytest.fixture(scope='session')
 def config_file(res_dir):
-    return os.path.abspath(os.path.join(res_dir, 'test.cfg'))
+    return os.path.abspath(os.path.join(res_dir, 'latest.cfg'))
 
 
 @pytest.fixture(scope='session')
