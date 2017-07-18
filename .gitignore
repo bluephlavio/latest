@@ -1,6 +1,6 @@
 # packages/installer info
 *.egg
-*.eggs/
+.eggs/
 *.egg-info/
 build
 dist
