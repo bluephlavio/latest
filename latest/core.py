@@ -32,6 +32,15 @@ def eval_block(block, ctx, config=Config):
 
 
 def eval_template(template, ctx, config=Config):
+    """Evaluate a template with a context dictionary.
+
+    Args:
+        template (str): the template.
+
+    Returns:
+        str: the evaluated document.
+
+    """
     frags = re.split(config.outer_block_regex, template)
     return str().join(map(lambda i, s: eval_block(s, ctx) if i % 2 == 1 else s, range(len(frags)), frags))
 
