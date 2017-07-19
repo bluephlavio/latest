@@ -1,4 +1,4 @@
-""":mod:`latest` LaTeX-oriented template engine.
+""":mod:`latest` is a LaTeX-oriented template engine.
 
 
 """

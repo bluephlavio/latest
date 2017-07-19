@@ -1,3 +1,8 @@
+""":mod:`main` module defines the main :mod:`latest` command line script.
+
+
+"""
+
 import argparse
 import os
 

@@ -1,3 +1,22 @@
+""":mod:`config` module contains configuration functions and classes for :mod:`latest` package.
+
+:mod:`latest` is completely customizable even in its syntax.
+
+Configuration file is found by default in `~/.latest/latest.cfg` but one can use his configuration objects/files.
+
+The section `lang` of the configuration file is where one can define its own syntax.
+
+Available options in `lang` section are:
+
+    * `code_entry`
+    * `code_exit`
+    * `ns_operator`
+    * `block_entry`
+    * `block_exit`
+
+
+"""
+
 import os.path
 import re
 

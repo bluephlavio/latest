@@ -1,3 +1,8 @@
+""":mod:`util` module contains utility functions for :mod:`latest` package.
+
+
+"""
+
 import os.path
 
 
