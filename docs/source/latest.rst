@@ -1,6 +1,11 @@
 latest package
 ==============
 
+.. automodule:: latest
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -45,10 +50,3 @@ latest\.util module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: latest
-    :members:
-    :undoc-members:
-    :show-inheritance:

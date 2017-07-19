@@ -53,7 +53,7 @@ def eval_expr(expr, ctx, config=Config):
 
     """
     frags = re.split(config.code_regex, expr)
-    return str().join(map(lambda i, s: eval_code(s, ctx) if i % 2 == 1 else s, range(len(frags)), frags))
+    return str().join(map(lambda i, s: eval_code(s, ctx, config=config) if i % 2 == 1 else s, range(len(frags)), frags))
 
 
 def eval_block(block, ctx, config=Config):
@@ -77,9 +77,9 @@ def eval_block(block, ctx, config=Config):
         ns = m.group(config._NS_TAG)
         expr = m.group(config._EXPR_TAG)
         ctx = select(ctx, ns, sep=config.ns_operator)
-        return eval_expr(expr, ctx)
+        return eval_expr(expr, ctx, config=config)
     else:
-        return eval_expr(block, ctx)
+        return eval_expr(block, ctx, config=config)
 
 
 def eval_template(template, ctx, config=Config):
@@ -95,7 +95,7 @@ def eval_template(template, ctx, config=Config):
 
     """
     frags = re.split(config.outer_block_regex, template)
-    return str().join(map(lambda i, s: eval_block(s, ctx) if i % 2 == 1 else s, range(len(frags)), frags))
+    return str().join(map(lambda i, s: eval_block(s, ctx, config=config) if i % 2 == 1 else s, range(len(frags)), frags))
 
 
 

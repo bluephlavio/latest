@@ -23,4 +23,4 @@ def test_config(config):
 
 
 def test_non_existing_config(non_existing_config):
-    assert non_existing_config.code_entry == '$'
+    assert non_existing_config.code_entry == '{%'

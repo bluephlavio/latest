@@ -40,8 +40,8 @@ class _Config(object):
     _OPTIONS = (
         # section, key, default
         ('general', 'templates_dir', _TEMPLATES_DIR),
-        ('lang', 'code_entry', '$'),
-        ('lang', 'code_exit', '$'),
+        ('lang', 'code_entry', '{%'),
+        ('lang', 'code_exit', '%}'),
         ('lang', 'ns_operator', '::'),
         ('lang', 'block_entry', '<<<'),
         ('lang', 'block_exit', '>>>'),

@@ -61,7 +61,7 @@ def block_data(request):
 
 def test_eval_block(config, context, block_data):
     (block, result) = block_data
-    assert eval_block(block, context) == result
+    assert eval_block(block, context, config=config) == result
 
 
 @pytest.fixture(params=[
@@ -73,7 +73,6 @@ def template_data(request):
 
 def test_eval_template(config, context, template_data):
     (template, result) = template_data
-    print(config.block_entry)
     assert eval_template(template, context, config=config) == result
 
 

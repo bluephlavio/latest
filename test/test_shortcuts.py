@@ -6,20 +6,20 @@ from latest.shortcuts import *
 
 @pytest.fixture
 def template_file(res_dir):
-    return os.path.join(res_dir, 'template.tmpl')
+    return os.path.join(res_dir, 'example.tmpl')
 
 
 @pytest.fixture
 def data_file(res_dir):
-    return os.path.join(res_dir, 'data.yaml')
+    return os.path.join(res_dir, 'example.yaml')
 
 
 @pytest.fixture
-def expected(res_dir):
-    expected_file = os.path.join(res_dir, 'expected.txt')
+def output_file(res_dir):
+    expected_file = os.path.join(res_dir, 'example.tex')
     with open(expected_file, 'r') as f:
         return f.read()
 
 
-def test_render(config, template_file, data_file, expected):
-    assert render(template_file, data_file, config=config) == expected
+def test_render(template_file, data_file, output_file):
+    assert render(template_file, data_file) == output_file

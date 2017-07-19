@@ -175,3 +175,8 @@ texinfo_documents = [
 ]
 
 
+# autodoc
+
+autodoc_member_order = 'bysource'
+
+
