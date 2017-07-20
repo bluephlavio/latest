@@ -9,9 +9,12 @@ def template_file(res_dir):
     return os.path.join(res_dir, 'example.tmpl')
 
 
-@pytest.fixture
-def data_file(res_dir):
-    return os.path.join(res_dir, 'example.yaml')
+@pytest.fixture(params=[
+    ('example.yaml', 'yml'),
+    ('example.json', 'json'),
+])
+def data_file(request, res_dir):
+    return (os.path.join(res_dir, request.param[0]), request.param[1])
 
 
 @pytest.fixture
@@ -22,4 +25,12 @@ def expected(res_dir):
 
 
 def test_render(template_file, data_file, expected):
-    assert render(template_file, data_file, format='yaml') == expected
+    (data, format) = data_file
+    if format in ('yaml', 'yml'):
+        try:
+            import yaml
+        except:
+            return
+    assert render(template_file, data, format=format) == expected
+
+

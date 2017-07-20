@@ -40,6 +40,7 @@ class _Config(object):
     _OPTIONS = (
         # section, key, default
         ('general', 'templates_dir', _TEMPLATES_DIR),
+        ('general', 'data_format', 'json'),
         ('general', 'join_items', os.linesep),
         ('lang', 'code_entry', '{%'),
         ('lang', 'code_exit', '%}'),
