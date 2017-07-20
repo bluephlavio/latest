@@ -12,7 +12,9 @@ Run `latest` script from the command line
 
     latest template data
 
+
 where 
+
     * `template` is the path to a template file and 
     * `data` is the path to a yaml formatted data file.
 
