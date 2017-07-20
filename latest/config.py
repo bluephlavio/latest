@@ -17,7 +17,7 @@ Available options in `lang` section are:
 
 """
 
-import os.path
+import os
 import re
 
 try:
@@ -40,6 +40,7 @@ class _Config(object):
     _OPTIONS = (
         # section, key, default
         ('general', 'templates_dir', _TEMPLATES_DIR),
+        ('general', 'join_items', os.linesep),
         ('lang', 'code_entry', '{%'),
         ('lang', 'code_exit', '%}'),
         ('lang', 'ns_operator', '::'),

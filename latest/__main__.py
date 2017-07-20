@@ -19,11 +19,11 @@ def main():
 
 
 def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('template')
-    parser.add_argument('data')
-    parser.add_argument('--config', '-c')
-    parser.add_argument('--output', '-o')
+    parser = argparse.ArgumentParser(description="A LaTeX-oriented template engine.")
+    parser.add_argument('template', help="path to template file.")
+    parser.add_argument('data', help="path to data file.")
+    parser.add_argument('--config', '-c', help="path to configuration file; default to ~/.latest/latest.cfg.")
+    parser.add_argument('--output', '-o', help="path to output file; default to stdout.")
     return parser.parse_args()
 
 

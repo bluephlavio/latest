@@ -3,3 +3,9 @@ author: Flavio Grandin
 date: Today
 content:
   x: 3
+  primes:
+    - n: 2
+    - n: 3
+    - n: 5
+    - n: 7
+    - n: 11
