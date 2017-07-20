@@ -15,11 +15,11 @@ def data_file(res_dir):
 
 
 @pytest.fixture
-def output_file(res_dir):
+def expected(res_dir):
     expected_file = os.path.join(res_dir, 'example.tex')
     with open(expected_file, 'r') as f:
         return f.read()
 
 
-def test_render(template_file, data_file, output_file):
-    assert render(template_file, data_file) == output_file
+def test_render(template_file, data_file, expected):
+    assert render(template_file, data_file, format='yaml') == expected

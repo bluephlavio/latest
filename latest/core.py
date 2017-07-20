@@ -6,7 +6,7 @@
 
 import re
 
-from .util import select, is_vector
+from .util import *
 from .config import config as Config
 from .exceptions import *
 
@@ -56,6 +56,43 @@ def eval_expr(expr, ctx, config=Config):
     return str().join(map(lambda i, s: eval_code(s, ctx, config=config) if i % 2 == 1 else s, range(len(frags)), frags))
 
 
+def eval_namespace(ns, ctx, config=Config):
+    """Translate a namespace to a list of context dictionaries.
+
+    A *namespace* is a branch of a main context dictionary.
+
+    The following rules apply:
+    
+    * if the path specified points to a scalar it is first converted to a dict with the '_value' key set to the scalar and a one-element list filled by the dict is returned
+    * if the path specified points to a vector the vector is returned by the elements are treated according to these rules
+    * if the path specified points to a tensor (dict or object) a one-element list filled with the tensor is returned
+
+    Args:
+        ns (str): the path for the namespace.
+        ctx (dict): the main context object.
+        config (config._Config): configuration object.
+
+    Returns:
+        list: a list of context dictionaries.
+
+    """
+
+    ctxs = select(ctx, ns, sep=config.ns_operator)
+
+    if is_scalar(ctxs):
+        ctxs = [{'_value': ctxs}]
+    elif is_vector(ctxs):
+        for i, c in enumerate(ctxs):
+            if is_tensor(c) and hasattr(c, '__setitem__'):
+                ctxs[i]['_index'] = i
+            else:
+                ctxs[i] = {'_index': i, '_value': c}
+    else:
+        ctxs = [ctxs]
+
+    return ctxs
+
+
 def eval_block(block, ctx, config=Config):
     """Evaluate a :mod:`latest` *block*.
 
@@ -76,9 +113,7 @@ def eval_block(block, ctx, config=Config):
     if m:
         ns = m.group(config._NS_TAG)
         expr = m.group(config._EXPR_TAG)
-        ctxs = select(ctx, ns, sep=config.ns_operator)
-        if not is_vector(ctxs):
-            ctxs = [ctxs]
+        ctxs = eval_namespace(ns, ctx, config=config)
         return config.join_items.join(eval_expr(expr, c, config=config) for c in ctxs)
     else:
         return eval_expr(block, ctx, config=config)
