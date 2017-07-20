@@ -10,8 +10,9 @@ Welcome to latest's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   source/readme
    source/install
+   source/gettingstarted
+   source/help
    source/license
    source/modules
 

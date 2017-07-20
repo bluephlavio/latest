@@ -1,10 +1,5 @@
-Readme
-======
-
-``latest`` is a LaTeX-oriented template engine.
-
-Basic Usage
------------
+Getting Started
+---------------
 
 Run `latest` script from the command line
 
