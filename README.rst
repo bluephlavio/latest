@@ -17,4 +17,5 @@ where
     * `data` is the path to a yaml formatted data file.
 
 
-
+.. image:: https://travis-ci.org/bluephlavio/latest.svg?branch=master
+   :target: https://travis-ci.org/bluephlavio/latest
