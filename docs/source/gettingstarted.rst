@@ -10,22 +10,25 @@ Run `latest` script from the command line
 
 where 
 
-    * `template` is the path to a template file and 
-    * `data` is the path to a yaml formatted data file.
+    * **template** is the path to a template file
+    * **data** is the path to a *json* or *yaml* formatted data file.
+
+
+---------------------------------------------------------------------
 
 
 An example template file can be something like
 
-.. include:: ../../test/res/example.tmpl
+.. include:: ../../test/res/template.tmpl
    :literal:
 
-while a yaml formatted data file can be something like
+while the data file can be something like (*yaml*)
 
-.. include:: ../../test/res/example.yaml
+.. include:: ../../test/res/data.yaml
    :literal:
 
 The expected output is
 
-.. include:: ../../test/res/example.tex
+.. include:: ../../test/res/expected.tex
    :literal:
 

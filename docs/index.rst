@@ -6,6 +6,9 @@
 Welcome to latest's documentation!
 ==================================
 
+**latest** | *A LaTeX-oriented template engine*
+
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
