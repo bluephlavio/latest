@@ -40,7 +40,7 @@ class _Config(object):
     _OPTIONS = (
         # section, key, default
         ('general', 'templates_dir', _TEMPLATES_DIR),
-        ('general', 'data_format', 'json'),
+        ('general', 'default_data_fmt', 'json'),
         ('general', 'join_items', os.linesep),
         ('lang', 'code_entry', '{%'),
         ('lang', 'code_exit', '%}'),
@@ -73,7 +73,6 @@ class _Config(object):
         if not hasattr(self, 'config_files'):
             self.config_files = list()
         self.config_files.append(config_file)
-
 
         parser = configparser.RawConfigParser()
         parser.read(config_file)

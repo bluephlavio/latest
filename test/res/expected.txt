@@ -1,2 +1,0 @@
-Test 1: x = 0
-Test 2: ns.x = 1

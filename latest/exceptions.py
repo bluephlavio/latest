@@ -22,6 +22,6 @@ class ContextError(LatestError):
 
 
 
-class FormatNotSupportedError(LatestError):
-    """Exception raised when data file is formatted in an unsupported format"""
+class DataFmtNotSupportedError(LatestError):
+    """Exception raised when data file is formatted in an unsupported format."""
     pass

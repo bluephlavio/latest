@@ -3,7 +3,11 @@
 
 """
 
+from os import linesep as ls
 import os.path
+import json
+
+from .exceptions import *
 
 
 def is_scalar(obj):
@@ -38,5 +42,45 @@ def getopt(parser, section, key, default):
             return parser.get(section, key)
     except:
         return default
+
+
+def get_supported_data_fmts():
+    return ('json', 'yaml', 'yml',)
+
+
+def guess_data_fmt(filename, default):
+    guess = os.path.splitext(filename)[-1].strip('.').lower()
+    return guess if guess in get_supported_data_fmts() else default
+
+
+def load_json(filename):
+    with open(filename, 'r') as f:
+        try:
+            return json.load(f)
+        except ValueError as e:
+            raise ValueError('Error parsing json data file:' + ls + str(e))
+
+
+def load_yaml(filename):
+    with open(filename, 'r') as f:
+        try:
+            import yaml
+            return yaml.load(f)
+        except ImportError as e:
+            raise ImportError(str(e) + ls + 'You need to install pyyaml!' + ls + 'Try:' + ls + '   $ pip install pyyaml')
+        except yaml.YAMLError as e:
+            raise yaml.YAMLError('Error parsing yaml data file!' + ls + str(e))
+
+
+def load_data(filename, data_fmt, default_data_fmt):
+
+    data_fmt = data_fmt.lower() if data_fmt is not None else guess_data_fmt(filename, default_data_fmt)
+
+    if data_fmt in ('json',):
+        return load_json(filename)
+    elif data_fmt in ('yaml', 'yml',):
+        return load_yaml(filename)
+    else:
+        raise DataFmtNotSupportedError(data_fmt + ' format not supported!')
 
 

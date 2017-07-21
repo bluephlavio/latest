@@ -1,2 +1,15 @@
-Test 1: <%x = $x$%>
-Test 2: <%ns::ns.x = $x$%>
+\documentclass{article}
+
+\title{{%title%}}
+\author{<<<{%author%}>>>}
+\date{<<<Biella (IT), {%date%}>>>}
+
+\begin{document}
+<<<content::x = {%x%} so that $x^2$ = {%x**2%}>>>.
+\section{Prime Numbers}
+\begin{itemize}
+<<<content::primes::\item {%n%}>>>
+\end{itemize}
+\section{Fibonacci}
+<<<content::fibonacci::{%_index%}. {%_value%}>>>
+\end{document}

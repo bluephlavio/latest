@@ -6,31 +6,24 @@ from latest.shortcuts import *
 
 @pytest.fixture
 def template_file(res_dir):
-    return os.path.join(res_dir, 'example.tmpl')
-
-
-@pytest.fixture(params=[
-    ('example.yaml', 'yml'),
-    ('example.json', 'json'),
-])
-def data_file(request, res_dir):
-    return (os.path.join(res_dir, request.param[0]), request.param[1])
+    return os.path.join(res_dir, 'template.tmpl')
 
 
 @pytest.fixture
 def expected(res_dir):
-    expected_file = os.path.join(res_dir, 'example.tex')
+    expected_file = os.path.join(res_dir, 'expected.tex')
     with open(expected_file, 'r') as f:
         return f.read()
 
 
 def test_render(template_file, data_file, expected):
-    (data, format) = data_file
-    if format in ('yaml', 'yml'):
+    (data_file, data_fmt) = data_file
+    if data_fmt in ('yaml', 'yml'):
         try:
             import yaml
         except:
+            assert True
             return
-    assert render(template_file, data, format=format) == expected
+    assert render(template_file, data_file, data_fmt=data_fmt) == expected
 
 

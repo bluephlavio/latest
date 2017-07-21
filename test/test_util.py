@@ -8,6 +8,7 @@ except:
 import pytest
 
 from latest.util import *
+from latest.config import create_config
 
 
 @pytest.fixture(params=[
@@ -97,6 +98,11 @@ def getopt_data(request):
 def test_getopt(parser, getopt_data):
     (section, key, default, result) = getopt_data
     assert getopt(parser, section, key, default=default) == result
+
+
+def test_guess_data_fmt(config, data_file):
+    (filename, fmt) = data_file
+    assert guess_data_fmt(filename, config.default_data_fmt) == fmt
 
 
 
