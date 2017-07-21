@@ -20,8 +20,3 @@ class ContextError(LatestError):
     """Exception raised when context dictionary doesn't match names required by a template."""
     pass
 
-
-
-class DataFmtNotSupportedError(LatestError):
-    """Exception raised when data file is formatted in an unsupported format."""
-    pass

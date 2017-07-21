@@ -7,8 +7,6 @@ from os import linesep as ls
 import os.path
 import json
 
-from .exceptions import *
-
 
 def is_scalar(obj):
     return isinstance(obj, (bool, int, float, complex, str))
@@ -69,7 +67,7 @@ def load_yaml(filename):
         except ImportError as e:
             raise ImportError(str(e) + ls + 'You need to install pyyaml!' + ls + 'Try:' + ls + '   $ pip install pyyaml')
         except yaml.YAMLError as e:
-            raise yaml.YAMLError('Error parsing yaml data file!' + ls + str(e))
+            raise ValueError('Error parsing yaml data file!' + ls + str(e))
 
 
 def load_data(filename, data_fmt, default_data_fmt):
@@ -81,6 +79,11 @@ def load_data(filename, data_fmt, default_data_fmt):
     elif data_fmt in ('yaml', 'yml',):
         return load_yaml(filename)
     else:
-        raise DataFmtNotSupportedError(data_fmt + ' format not supported!')
+        raise ValueError(data_fmt + ' format not supported!')
+
+    return
+
+
+
 
 
