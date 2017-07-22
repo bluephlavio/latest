@@ -29,7 +29,8 @@ def eval_code(code, ctx, config=Config):
 
     """
     try:
-        result = eval(code, ctx)
+        from datetime import datetime
+        result = eval(code, ctx, locals())
         return str(result)
     except SyntaxError:
         raise CodeError
