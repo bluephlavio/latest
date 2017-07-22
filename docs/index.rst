@@ -3,15 +3,31 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to latest's documentation!
-==================================
 
-**latest** | *A LaTeX-oriented template engine*
+Welcome to latest
+=================
+
+``latest`` | *A* :math:`\LaTeX`-*oriented template engine*
+
+latest is lightweight templating engine for Python, designed for model documents. It has a simple, :math:`\LaTeX`-compatible but completely customizable syntax.
+
+.. include:: ../test/res/template.tmpl
+   :literal:
+
+
+**Features:**
+
+* :math:`\LaTeX`-compatible
+* customizable syntax
+* lists without loops
+
+
+Documentation
+=============
 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    source/install
    source/gettingstarted
