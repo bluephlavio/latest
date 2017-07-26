@@ -1,15 +1,24 @@
 """:mod:`config` module contains configuration functions and classes for :mod:`latest` package.
 
-:mod:`latest` is completely customizable even in its syntax.
+:mod:`latest` is completely customizable in its syntax both programmatically and through a configuration file.
 
-Configuration file is found by default in `~/.latest/latest.cfg` but one can use his configuration objects/files.
+Configurations are contained in an object of the class :class:`_Config` that take an optional keyword argument in his :code:`__init__` method to specify the location of the configuration file. If no configuration file is specified, defaults are set in code. The default configuration object :code:`config` is defined in this module and can be imported to be used elsewhere. I suggest an import statement like
 
-The section `lang` of the configuration file is where one can define its own syntax.
+.. code::
 
-Available options in `lang` section are:
+    from latest.config import config as Config
 
-    * `code_entry`
-    * `code_exit`
+Then, you can think of the configuration object as a class with many static methods. To create an alternate configuration object you can use the public function :code:`create_config(config_file=None)` instead of directly instantiate an object of private class :class:`_Config`.
+
+Configuration file is found by default (default configuration object look for this location) in :code:`~/.latest/latest.cfg` but one can use his own configuration file. Configuration files must be in :code:`ini` format. Useful sections are:
+
+    * **general**
+    * **lang**
+
+The section *lang* of the configuration file is where one can define its own syntax. Available options in `lang` section are:
+
+    * `cmd_entry`
+    * `cmd_exit`
     * `env_entry`
     * `env_exit`
     * `ns_operator`

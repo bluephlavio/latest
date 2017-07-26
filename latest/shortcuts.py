@@ -9,7 +9,7 @@ from .core import eval_latest
 
 
 def render(template_filename, data_filename, config=Config, data_fmt=None):
-    """Render a template in a file within a context defined by a yaml data file.
+    """Render a template in a file within a context defined by a *json* or *yaml* formatted data file.
 
     Args:
         template_filename (str): the path of the template file.

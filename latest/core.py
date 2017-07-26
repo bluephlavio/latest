@@ -39,7 +39,7 @@ def eval_code(code, context, config=Config):
 
 
 def eval_ns(path, context, config=Config):
-    """Translate a namespace to a list of context dictionaries.
+    """Translates a path to a list of context dictionaries, a.k.a *namespace*.
 
     A *namespace* is a branch of a main context dictionary.
 
@@ -55,7 +55,7 @@ def eval_ns(path, context, config=Config):
         config (config._Config): configuration object.
 
     Returns:
-        list: a list of context dictionaries.
+        list: the namespace, a list of context dictionaries.
 
     """
 
@@ -78,7 +78,7 @@ def eval_ns(path, context, config=Config):
 def eval_cmd(code, namespace, context, config=Config):
     """Evaluate a :mod:`latest` *command*.
 
-    A *command* is a :mod:`latest` directive to execute code within a namespace and output a string.
+    A *command* is a :mod:`latest` directive to execute code within a namespace and output a string. The *command* directive specify a *code island*. If the namespace is a list of context dictionary the code island is evaluated against every context and the results are joined (concatenated) with a special string, which by default is specified as the :code:`join_items` attribute of the configuration object.
 
     Args:
         code (str): the code to be executed.
@@ -87,7 +87,7 @@ def eval_cmd(code, namespace, context, config=Config):
         config (config._Config): configuration object.
 
     Returns:
-        str: the output of the code executed within the namespace and converted to string. If the namespace target a list of contexts the code is evaluated for every context and the results are concatenated by the string defined in :code:`config.join_items`.
+        str: the output of the code executed within the namespace and converted to string. If the namespace target a list of contexts the code is evaluated for every context and the results are concatenated by the string defined in the :code:`join_items` attribute of the configuration object.
 
     """
 
@@ -98,7 +98,7 @@ def eval_cmd(code, namespace, context, config=Config):
 def eval_expr(expression, context, config=Config):
     """Evaluate a :mod:`latest` *expression*.
 
-    An *expression* is a string of normal text with eventual code islands in between.
+    An *expression* is a string of plain text with eventual code islands (:mod:`latest` commands) in between.
     The evaluation proceeds evaluating code islands and then concatenating the results with the fragments of plain text.
 
     Args:
@@ -140,7 +140,7 @@ def eval_env(content, namespace, context, config=Config):
         config (config._Config): configuration object.
 
     Returns:
-        str: the output obtained evaluating the expression within the namespace.
+        str: the output obtained evaluating the expression within the namespace. If the namespace targets a list of context dictionaries, the expression is evaluated against every context and the results are joined with a special string which by default is specified in the :code:`join_items` attribute of the configuration object.
 
     """
 
@@ -149,7 +149,7 @@ def eval_env(content, namespace, context, config=Config):
 
 
 def eval_latest(code, context, config=Config):
-    """Evaluates an entire template.
+    """Evaluates an entire latest code/template.
 
     Args:
         code (str): the :mod:`latest` formatted template code.
