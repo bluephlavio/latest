@@ -32,10 +32,10 @@ def non_existing_config(non_existing_config_file):
 
 @pytest.fixture(scope = 'session', params=[
     ('data.yaml', 'yaml'),
-    ('data.yml', 'yml'),
-    ('data.json', 'json'),
-    ('data.txt', config(config_file(res_dir())).default_data_fmt),
-    ('data', config(config_file(res_dir())).default_data_fmt),
+#    ('data.yml', 'yml'),
+#    ('data.json', 'json'),
+#    ('data.txt', config(config_file(res_dir())).default_data_fmt),
+#    ('data', config(config_file(res_dir())).default_data_fmt),
 ])
 def data_file(request, config, res_dir):
     return (os.path.join(res_dir, request.param[0]), request.param[1])

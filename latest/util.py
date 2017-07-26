@@ -6,6 +6,7 @@
 from os import linesep as ls
 import os.path
 import json
+import re
 
 
 def is_scalar(obj):
@@ -24,7 +25,7 @@ def path(location):
     return os.path.abspath(os.path.expanduser(location))
 
 
-def select(data, path, sep='/'):
+def select(path, data, sep='/'):
     out = data
     if path:
         for key in path.strip(sep).split(sep):
@@ -83,6 +84,12 @@ def load_data(filename, data_fmt, default_data_fmt):
 
     return
 
+
+def split(string, pattern):
+    matches = list(re.finditer(pattern, string))
+    start = [0,] + [m.end() for m in matches]
+    end = [m.start() for m in matches] + [len(string),]
+    return [string[indices[0]:indices[1]] for indices in zip(start, end)]
 
 
 

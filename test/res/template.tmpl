@@ -1,13 +1,21 @@
 \documentclass{article}
 
-\title{{%title%}}
+\title{\latest{$ title $}}
 
 \begin{document}
-<<<content::x = {%x%} so that $x^2$ = {%x**2%}>>>.
+\begin{latest}[content]
+x = \latest{$ x $} so that $x^2$ = \latest{$ x**2 $}.
+\end{latest}
 \section{Prime Numbers}
 \begin{itemize}
-<<<content::primes::\item {%n%}>>>
+\begin{latest}[content::primes]
+\item \latest{$ n $}
+
+\end{latest}
 \end{itemize}
 \section{Fibonacci}
-<<<content::fibonacci::{%_index%}. {%_value%}>>>
+\begin{latest}[content::fibonacci]
+\latest{$ _index $}. \latest{$ _value $}
+
+\end{latest}
 \end{document}

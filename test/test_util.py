@@ -59,6 +59,7 @@ def data():
 
 @pytest.fixture(params=[
     (data(), str(), '/', data()),
+    (data(), None, '/', data()),
     (data(), 'a', '/', 0),
     (data(), 'b', '::', [0, 1]),
     (data(), 'c', '\\', {'x': 0, 'y': 1}),
@@ -74,7 +75,7 @@ def select_data(request):
 def test_select(select_data):
     (data, path, sep, result) = select_data
     try:
-        assert select(data, path, sep=sep) == result
+        assert select(path, data, sep=sep) == result
     except KeyError:
         assert not result
 
@@ -103,6 +104,21 @@ def test_getopt(parser, getopt_data):
 def test_guess_data_fmt(config, data_file):
     (filename, fmt) = data_file
     assert guess_data_fmt(filename, config.default_data_fmt) == fmt
+
+
+@pytest.fixture(params=[
+    ('text pattern text pattern text', 'pattern', ['text ', ' text ', ' text']),
+    (r'text\latest{$code$}text', r'\\latest\{\$(?P<code>.*?)\$\}', ['text', 'text']),
+])
+def split_data(request):
+    return request.param
+
+
+def test_split(split_data):
+    (string, pattern, result) = split_data
+    assert split(string, pattern) == result
+
+
 
 
 

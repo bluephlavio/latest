@@ -10,9 +10,9 @@ Available options in `lang` section are:
 
     * `code_entry`
     * `code_exit`
+    * `env_entry`
+    * `env_exit`
     * `ns_operator`
-    * `block_entry`
-    * `block_exit`
 
 
 """
@@ -41,18 +41,17 @@ class _Config(object):
         # section, key, default
         ('general', 'templates_dir', _TEMPLATES_DIR),
         ('general', 'default_data_fmt', 'json'),
-        ('general', 'join_items', os.linesep),
-        ('lang', 'code_entry', '{%'),
-        ('lang', 'code_exit', '%}'),
-        ('lang', 'ns_operator', '::'),
-        ('lang', 'block_entry', '<<<'),
-        ('lang', 'block_exit', '>>>'),
+        ('general', 'join_items', str()),
+        ('lang', 'cmd_entry', r'\\latest(\[(?P<ns>.*?)\])?\{\$'),
+        ('lang', 'cmd_exit', r'\$\}'),
+        ('lang', 'env_entry', r'\\begin\{latest\}(\[(?P<ns>.*?)\])?\s?'),
+        ('lang', 'env_exit', r'\s?\\end\{latest\}'),
+        ('lang', 'ns_operator', r'::'),
     )
 
-    _CODE_TAG = 'code'
-    _NS_TAG = 'ns'
-    _EXPR_TAG = 'expr'
-    _BLOCK_TAG = 'block'
+    CMD_CONTENT_TAG = 'code'
+    ENV_CONTENT_TAG = 'expr'
+    NS_TAG = 'ns'
 
 
     def __init__(self, config_file=None):
@@ -82,18 +81,13 @@ class _Config(object):
 
 
     @property
-    def code_regex(self):
-        return re.escape(self.code_entry) + r'(?P<code>.*?)' + re.escape(self.code_exit)
+    def cmd_regex(self):
+        return self.cmd_entry + r'(?P<' + self.CMD_CONTENT_TAG + r'>.*?)' + self.cmd_exit
 
 
     @property
-    def inner_block_regex(self):
-        return r'(?P<ns>.*)' + re.escape(self.ns_operator) + '(?P<expr>.*)'
-
-
-    @property
-    def outer_block_regex(self):
-        return re.escape(self.block_entry) + r'(?P<block>.*?)' + re.escape(self.block_exit)
+    def env_regex(self):
+        return self.env_entry + r'(?P<' + self.ENV_CONTENT_TAG + r'>[\s\S]*?)' + self.env_exit
 
 
 

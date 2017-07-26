@@ -5,7 +5,7 @@
 
 from .util import load_data
 from .config import config as Config
-from .core import eval_template
+from .core import eval_latest
 
 
 def render(template_filename, data_filename, config=Config, data_fmt=None):
@@ -27,7 +27,7 @@ def render(template_filename, data_filename, config=Config, data_fmt=None):
 
     context = load_data(data_filename, data_fmt, config.default_data_fmt)
 
-    return eval_template(template, context, config=config)
+    return eval_latest(template, context, config=config)
 
 
 
