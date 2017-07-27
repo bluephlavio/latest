@@ -11,8 +11,8 @@ Welcome to latest
 
 latest is lightweight templating engine for Python, designed for model documents. It has a simple, :math:`\LaTeX`-compatible but completely customizable syntax.
 
-.. include:: ../test/res/template.tmpl
-   :literal:
+.. literalinclude:: ../test/res/template.tmpl
+   :language: latex
 
 
 **Features:**
