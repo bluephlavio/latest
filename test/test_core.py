@@ -17,6 +17,18 @@ def context():
 
 
 @pytest.fixture(params=[
+    ('ns={namespace}, join={,}', {'ns': 'namespace', 'join': ','}),
+])
+def parse_options_data(request):
+    return request.param
+
+
+def test_parse_options(parse_options_data):
+    (options_string, options) = parse_options_data
+    assert parse_options(options_string) == options
+
+
+@pytest.fixture(params=[
     ('2*2', '4'),
     ('scalar*2', str(context()['scalar']*2)),
     ('list[0]+list[1]', str(context()['list'][0]+context()['list'][1])),
@@ -65,12 +77,12 @@ def cmd_data(request):
 
 def test_eval_cmd(context, cmd_data):
     (code, namespace, result) = cmd_data
-    assert eval_cmd(code, namespace, context) == result
+    assert eval_cmd(code, context, ns=namespace) == result
 
 
 @pytest.fixture(params=[
     (r'\latest{$ scalar $}', str(context()['scalar'])),
-    (r'normal text, \latest{$ "code" $}, normal text and \latest[dict]{$ y $} code again...', 'normal text, code, normal text and 1 code again...'),
+    (r'normal text, \latest{$ "code" $}, normal text and \latest[ns={dict}]{$ y $} code again...', 'normal text, code, normal text and 1 code again...'),
 ])
 def expr_data(request):
     return request.param
@@ -96,8 +108,8 @@ def test_eval_env(context, env_data):
 
 
 @pytest.fixture(params=[
-    (r'\begin{latest}[dict_of_dicts::x]i = \latest{$ i $}\end{latest}', 'i = 0'),
-    (r'\latest{$scalar$},\begin{latest}[dict]\latest{$x$}\end{latest}', str(context()['scalar']) + ',' + str(context()['dict']['x'])),
+    (r'\begin{latest}{dict_of_dicts.x}i = \latest{$ i $}\end{latest}', 'i = 0'),
+    (r'\latest{$scalar$},\begin{latest}{dict}\latest{$x$}\end{latest}', str(context()['scalar']) + ',' + str(context()['dict']['x'])),
 ])
 def latest_data(request):
     return request.param

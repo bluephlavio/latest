@@ -10,6 +10,33 @@ from .config import config as Config
 from .exceptions import *
 
 
+def parse_options(options, config=Config):
+    """Parses a string of options.
+
+    Args:
+        options (str): the string that defines options.
+
+    Returns:
+        dict: the dictionary with options as key-value pairs.
+
+    """
+
+    opts = {}
+
+    if options:
+        for m in re.finditer(config.opt_regex, options):
+            key = m.group(config.OPT_KEY_TAG)
+
+            try:
+                value = bytes(m.group(config.OPT_VALUE_TAG), encoding='utf').decode('unicode_escape')
+            except TypeError:
+                value = m.group(config.OPT_VALUE_TAG).decode('string_escape')
+
+            opts[key] = value
+
+    return opts
+
+
 def eval_code(code, context, config=Config):
     """Parses and evaluates code converting output to a string.
 
@@ -75,24 +102,25 @@ def eval_ns(path, context, config=Config):
     return ctxs
 
 
-def eval_cmd(code, namespace, context, config=Config):
+def eval_cmd(code, context, config=Config, ns=None, join_items=str()):
     """Evaluate a :mod:`latest` *command*.
 
     A *command* is a :mod:`latest` directive to execute code within a namespace and output a string. The *command* directive specify a *code island*. If the namespace is a list of context dictionary the code island is evaluated against every context and the results are joined (concatenated) with a special string, which by default is specified as the :code:`join_items` attribute of the configuration object.
 
     Args:
         code (str): the code to be executed.
-        namespace (str): the namespace to be executed in.
         context (dict): the global context.
         config (config._Config): configuration object.
+        ns (str): the namespace to be executed in.
+        join_items (str): the string used to join the results from the contexts in the namespace.
 
     Returns:
-        str: the output of the code executed within the namespace and converted to string. If the namespace target a list of contexts the code is evaluated for every context and the results are concatenated by the string defined in the :code:`join_items` attribute of the configuration object.
+        str: the output of the code executed within the namespace and converted to string. If the namespace target a list of contexts the code is evaluated for every context and the results are concatenated by the string defined in the :code:`join_items` attribute of the configuration object or in the keyword argument :code:`join_items`.
 
     """
 
-    ctxs = eval_ns(namespace, context, config=Config)
-    return config.join_items.join(eval_code(code, c, config=config) for c in ctxs)
+    ctxs = eval_ns(ns, context, config=Config)
+    return join_items.join(eval_code(code, c, config=config) for c in ctxs)
 
 
 def eval_expr(expression, context, config=Config):
@@ -116,19 +144,14 @@ def eval_expr(expression, context, config=Config):
 
     for i, match in enumerate(matches):
         code = match.group(config.CMD_CONTENT_TAG)
+        options = parse_options(match.group(config.OPT_TAG))
 
-        try:
-            namespace = match.group(config.NS_TAG)
-        except IndexError:
-            namespace = None
-
-        print('!!!namespace: ', namespace)
-        frags.insert(2 * i + 1, eval_cmd(code, namespace, context, config=config))
+        frags.insert(2 * i + 1, eval_cmd(code, context, config=config, **options))
 
     return str().join(frags)
 
 
-def eval_env(content, namespace, context, config=Config):
+def eval_env(content, namespace, context, config=Config, join_items=str()):
     """Evaluate a :mod:`latest` *environment*.
 
     An *environment* is a section of a template to be executed within a namespace.
@@ -138,6 +161,7 @@ def eval_env(content, namespace, context, config=Config):
         namespace (str): the namespace within the global context to be evaluated in.
         context (dict): the global context.
         config (config._Config): configuration object.
+        join_items (str): the string used to join the results from the evaluation process over the expression inside the environment against the contexts within the namespace.
 
     Returns:
         str: the output obtained evaluating the expression within the namespace. If the namespace targets a list of context dictionaries, the expression is evaluated against every context and the results are joined with a special string which by default is specified in the :code:`join_items` attribute of the configuration object.
@@ -145,7 +169,7 @@ def eval_env(content, namespace, context, config=Config):
     """
 
     ctxs = eval_ns(namespace, context, config=config)
-    return config.join_items.join(eval_expr(content, c, config=config) for c in ctxs)
+    return join_items.join(eval_expr(content, c, config=config) for c in ctxs)
 
 
 def eval_latest(code, context, config=Config):
@@ -167,15 +191,12 @@ def eval_latest(code, context, config=Config):
 
     for i, match in enumerate(matches):
         content = match.group(config.ENV_CONTENT_TAG)
+        namespace = match.group(config.NS_TAG)
+        options = parse_options(match.group(config.OPT_TAG))
 
-        try:
-            namespace = match.group(config.NS_TAG)
-        except IndexError:
-            namespace = None
+        frags.insert(2 * i + 1, eval_env(content, namespace, context, config=config, **options))
 
-        frags.insert(2 * i + 1, eval_env(content, namespace, context, config=config))
-
-    return config.join_items.join(frags)
+    return str().join(frags)
 
 
 

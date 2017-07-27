@@ -22,4 +22,4 @@ def test_config(config):
 
 
 def test_non_existing_config(non_existing_config):
-    assert non_existing_config.cmd_entry == r'\\latest(\[(?P<ns>.*?)\])?\{\$'
+    assert non_existing_config.cmd_entry == r'\\latest(\[(?P<' + non_existing_config.OPT_TAG + '>.*?)\])?\{\$'

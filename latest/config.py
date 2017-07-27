@@ -51,15 +51,19 @@ class _Config(object):
         ('general', 'templates_dir', _TEMPLATES_DIR),
         ('general', 'default_data_fmt', 'json'),
         ('general', 'join_items', str()),
-        ('lang', 'cmd_entry', r'\\latest(\[(?P<ns>.*?)\])?\{\$'),
+        ('lang', 'opt_regex', r'\s*(?P<key>[^,=]*?)\s*=\s*\{(?P<value>.*?)\}\s*'),
+        ('lang', 'cmd_entry', r'\\latest(\[(?P<opts>.*?)\])?\{\$'),
         ('lang', 'cmd_exit', r'\$\}'),
-        ('lang', 'env_entry', r'\\begin\{latest\}(\[(?P<ns>.*?)\])?\s?'),
+        ('lang', 'env_entry', r'\\begin\{latest\}\{(?P<ns>.*?)\}(\[(?P<opts>.*?)\])?\s?'),
         ('lang', 'env_exit', r'\s?\\end\{latest\}'),
-        ('lang', 'ns_operator', r'::'),
+        ('lang', 'ns_operator', r'.'),
     )
 
     CMD_CONTENT_TAG = 'code'
     ENV_CONTENT_TAG = 'expr'
+    OPT_TAG = 'opts'
+    OPT_KEY_TAG = 'key'
+    OPT_VALUE_TAG = 'value'
     NS_TAG = 'ns'
 
 
