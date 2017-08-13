@@ -21,6 +21,43 @@ def is_tensor(obj):
     return (not is_scalar(obj)) and (not is_vector(obj))
 
 
+class AttrDict(dict):
+
+    def __init__(self, *args, **kwargs):
+        super(self.__class__, self).__init__(*args, **kwargs)
+        self.__dict__ = self
+
+
+def contextify(obj):
+
+    if is_scalar(obj):
+        return obj
+    elif is_vector(obj):
+        return [contextify(o) for o in obj]
+    elif isinstance(obj, dict):
+        return AttrDict(dict((k, contextify(v)) for k, v in obj.items()))
+    else:
+        return obj
+
+
+def listify(context):
+
+    if is_scalar(context):
+        return [{'_value': context}]
+
+    elif is_vector(context):
+
+        for i, ctx in enumerate(context):
+            if not isinstance(ctx, dict):
+                context[i] = {'_value': ctx}
+            context[i]['_index'] = i
+
+        return context
+
+    else:
+        return [context] if isinstance(context, dict) else [{'_value': context}]
+
+
 def path(location):
     return os.path.abspath(os.path.expanduser(location))
 

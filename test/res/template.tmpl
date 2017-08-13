@@ -3,21 +3,22 @@
 \title{\latest{$ title $}}
 
 \begin{document}
-
-\begin{latest}{content}
-x = \latest{$ x $} so that $x^2$ = \latest{$ x**2 $}.
+\begin{latest}{$ False $}It doesn't exist\end{latest}
+\begin{latest}{$ content $}
+x = \latest{$ scalar $} so that $x^2$ = \latest{$ scalar**2 $}.
 \end{latest}
-
-\section{Prime Numbers}
 \begin{itemize}
-\begin{latest}{content.primes}[join_items={\n}]
-\item \latest{$ n $}
+\begin{latest}{$ content.vector $}[join={$ '\n' $}]
+\item \latest{$ _index $}. \latest{$ _value $}
+\end{latest}
+\begin{latest}{$ content.tensor $}[join={$ '\n' $}]
+x = \latest{$ x $} and y = \latest{$ y $}
+\end{latest}
+\begin{latest}{$ content $}
+\begin{latest}{$ tensor $}
+Testing nested structures:
+x = \latest{$ x $} and y = \latest{$ y $}
+\end{latest}
 \end{latest}
 \end{itemize}
-
-\section{Fibonacci}
-\begin{latest}{content.fibonacci}[join_items={\n}]
-\latest{$ _index $}. \latest{$ _value $}
-\end{latest}
-
 \end{document}

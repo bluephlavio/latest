@@ -3,9 +3,9 @@
 
 """
 
-from .util import load_data
+from .util import load_data, contextify
 from .config import config as Config
-from .core import eval_latest
+from .core import Grammar
 
 
 def render(template_filename, data_filename, config=Config, data_fmt=None):
@@ -27,7 +27,7 @@ def render(template_filename, data_filename, config=Config, data_fmt=None):
 
     context = load_data(data_filename, data_fmt, config.default_data_fmt)
 
-    return eval_latest(template, context, config=config)
+    return Grammar(config).eval(template, context)
 
 
 

@@ -2,201 +2,135 @@
 
 """
 
-import re
 import copy
+import pyparsing as pp
 
 from .util import *
 from .config import config as Config
 from .exceptions import *
 
 
-def parse_options(options, config=Config):
-    """Parses a string of options.
+class ParserHandler(object):
 
-    Args:
-        options (str): the string that defines options.
-
-    Returns:
-        dict: the dictionary with options as key-value pairs.
-
-    """
-
-    opts = {}
-
-    if options:
-        for m in re.finditer(config.opt_regex, options):
-            key = m.group(config.OPT_KEY_TAG)
-
-            try:
-                value = bytes(m.group(config.OPT_VALUE_TAG), encoding='utf').decode('unicode_escape')
-            except TypeError:
-                value = m.group(config.OPT_VALUE_TAG).decode('string_escape')
-
-            opts[key] = value
-
-    return opts
+    def __init__(self, s, loc, toks):
+        self.s = s
+        self.loc = loc
+        self.toks = toks
+        if hasattr(self, 'initialize'):
+            self.initialize()
 
 
-def eval_code(code, context, config=Config):
-    """Parses and evaluates code converting output to a string.
+class GrammarHandler(ParserHandler):
 
-    Args:
-        code (str): the code to be evaluated.
-        context (dict): the context to be evaluated in.
-        config (config._Config): configuration object.
+    def eval(self, context, config=Config, **options):
+        if context:
+            join = options.get('join', config.join)
+            ctx = contextify(listify(context))
+            return join.join([''.join(tok.eval(ns) for tok in self.toks) for ns in ctx])
+        else:
+            return str()
 
-    Returns:
-        str: the output converted to a string.
 
-    Raises:
-        :class:`CodeError`: raised if a :class:`SyntaxError` is raised by the builtin :func:`eval` function.
-        :class:`ContextError`: raised when the context names do not match code names
-            and a :class:`NameError` is raised by the builtin :func:`eval` function.
+class PyExprHandler(ParserHandler):
 
-    """
+    def initialize(self):
+        self.pyexpr = self.toks[0]
 
-    try:
-        ctx = copy.deepcopy(context)
-        result = eval(code, ctx)
+    def eval(self, context):
+        return eval(self.pyexpr, context)
+
+
+class StrPyExprHandler(ParserHandler):
+
+    def initialize(self):
+        self.pyexpr = self.toks[0]
+
+    def eval(self, context):
+        result = self.pyexpr.eval(context)
         return str(result)
-    except SyntaxError:
-        raise CodeError
-    except NameError:
-        raise ContextError
 
 
-def eval_ns(path, context, config=Config):
-    """Translates a path to a list of context dictionaries, a.k.a *namespace*.
+class OptHandler(ParserHandler):
 
-    A *namespace* is a branch of a main context dictionary.
+    def initialize(self):
+        self.key = self.toks[0]
+        self.value = self.toks[1]
 
-    The following rules apply:
-    
-    * if the path specified points to a scalar it is first converted to a dict with the '_value' key set to the scalar and a one-element list filled by the dict is returned
-    * if the path specified points to a vector the vector is returned by the elements are treated according to these rules
-    * if the path specified points to a tensor (dict or object) a one-element list filled with the tensor is returned
-
-    Args:
-        path (str): the path for the namespace.
-        context (dict): the main context object.
-        config (config._Config): configuration object.
-
-    Returns:
-        list: the namespace, a list of context dictionaries.
-
-    """
-
-    ctxs = select(path, context, sep=config.ns_operator)
-
-    if is_scalar(ctxs):
-        ctxs = [{'_value': ctxs}]
-    elif is_vector(ctxs):
-        for i, ctx in enumerate(ctxs):
-            if is_tensor(ctx) and hasattr(ctx, '__setitem__'):
-                ctxs[i]['_index'] = i
-            else:
-                ctxs[i] = {'_index': i, '_value': ctx}
-    else:
-        ctxs = [ctxs]
-
-    return ctxs
+    def eval(self, context,):
+        key, value = self.key, self.value.eval(context) if hasattr(self.value, 'eval') else self.value
+        return (key, value)
 
 
-def eval_cmd(code, context, config=Config, ns=None, join_items=str()):
-    """Evaluate a :mod:`latest` *command*.
+class OptsHandler(ParserHandler):
 
-    A *command* is a :mod:`latest` directive to execute code within a namespace and output a string. The *command* directive specify a *code island*. If the namespace is a list of context dictionary the code island is evaluated against every context and the results are joined (concatenated) with a special string, which by default is specified as the :code:`join_items` attribute of the configuration object.
+    def initialize(self):
+        self.opts = self.toks
 
-    Args:
-        code (str): the code to be executed.
-        context (dict): the global context.
-        config (config._Config): configuration object.
-        ns (str): the namespace to be executed in.
-        join_items (str): the string used to join the results from the contexts in the namespace.
-
-    Returns:
-        str: the output of the code executed within the namespace and converted to string. If the namespace target a list of contexts the code is evaluated for every context and the results are concatenated by the string defined in the :code:`join_items` attribute of the configuration object or in the keyword argument :code:`join_items`.
-
-    """
-
-    ctxs = eval_ns(ns, context, config=Config)
-    return join_items.join(eval_code(code, c, config=config) for c in ctxs)
+    def eval(self, context):
+        return dict(opt.eval(context) for opt in self.opts)
 
 
-def eval_expr(expression, context, config=Config):
-    """Evaluate a :mod:`latest` *expression*.
+class EnvHandler(ParserHandler):
 
-    An *expression* is a string of plain text with eventual code islands (:mod:`latest` commands) in between.
-    The evaluation proceeds evaluating code islands and then concatenating the results with the fragments of plain text.
+    def initialize(self):
+        self.context = self.toks[0]
+        self.options = self.toks[1]
+        self.content = self.toks[2]
 
-    Args:
-        expression (str): the expression to be evaluated.
-        context (dict): the context to be evaluated in.
-        config (config._Config): configuration object.
-
-    Returns:
-        str: the output obtained concatenating the plain text fragments with the output of code islands evaluation process.
-
-    """
-
-    frags = split(expression, config.cmd_regex)
-    matches = list(re.finditer(config.cmd_regex, expression))
-
-    for i, match in enumerate(matches):
-        code = match.group(config.CMD_CONTENT_TAG)
-        options = parse_options(match.group(config.OPT_TAG))
-
-        frags.insert(2 * i + 1, eval_cmd(code, context, config=config, **options))
-
-    return str().join(frags)
+    def eval(self, context):
+        ctx = self.context.eval(context)
+        opts = self.options.eval(context)
+        return self.content.eval(ctx, **opts)
 
 
-def eval_env(content, namespace, context, config=Config, join_items=str()):
-    """Evaluate a :mod:`latest` *environment*.
+class TxtHandler(ParserHandler):
 
-    An *environment* is a section of a template to be executed within a namespace.
+    def initialize(self):
+        self.txt = self.toks[0]
 
-    Args:
-        content (str): the content of the environment to be evaluated.
-        namespace (str): the namespace within the global context to be evaluated in.
-        context (dict): the global context.
-        config (config._Config): configuration object.
-        join_items (str): the string used to join the results from the evaluation process over the expression inside the environment against the contexts within the namespace.
-
-    Returns:
-        str: the output obtained evaluating the expression within the namespace. If the namespace targets a list of context dictionaries, the expression is evaluated against every context and the results are joined with a special string which by default is specified in the :code:`join_items` attribute of the configuration object.
-
-    """
-
-    ctxs = eval_ns(namespace, context, config=config)
-    return join_items.join(eval_expr(content, c, config=config) for c in ctxs)
+    def eval(self, context):
+        return self.txt
 
 
-def eval_latest(code, context, config=Config):
-    """Evaluates an entire latest code/template.
+class Grammar(object):
 
-    Args:
-        code (str): the :mod:`latest` formatted template code.
-        context (dict): the global context.
-        config (config._Config): configuration object.
+    def __init__(self, config=Config):
+        self.grammar = pp.Forward()
+        self.pyexpr_entry = pp.Regex(config.pyexpr_entry).suppress()
+        self.pyexpr_exit = pp.Regex(config.pyexpr_exit).suppress()
+        self.pyexpr = self.pyexpr_entry + pp.SkipTo(self.pyexpr_exit) + self.pyexpr_exit
+        self.pyexpr.addParseAction(PyExprHandler)
+        self.opt_key = pp.Word(pp.alphas)
+        self.opt_value = self.pyexpr | pp.Word(pp.alphas)
+        self.opt = self.opt_key + pp.Suppress('=') + self.opt_value
+        self.opt.addParseAction(OptHandler)
+        self.opts_list = pp.delimitedList(self.opt, delim=',')
+        self.opts_entry = pp.Regex(config.opts_entry).suppress()
+        self.opts_exit = pp.Regex(config.opts_exit).suppress()
+        self.opts = pp.Optional(self.opts_entry + self.opts_list + self.opts_exit)
+        self.opts.addParseAction(OptsHandler)
+        self.str_pyexpr_entry = pp.Regex(config.str_pyexpr_entry).suppress()
+        self.str_pyexpr_exit = pp.Regex(config.str_pyexpr_exit).suppress() if config.str_pyexpr_exit else pp.Empty()
+        self.str_pyexpr = self.str_pyexpr_entry + self.pyexpr + self.str_pyexpr_exit
+        self.str_pyexpr.addParseAction(StrPyExprHandler)
+        self.opt_space = pp.Optional(pp.Regex(r'\s')).suppress()
+        self.env_entry = pp.Regex(config.env_entry).suppress()
+        self.env_exit = self.opt_space + pp.Regex(config.env_exit).suppress()
+        self.env = self.env_entry + self.pyexpr + self.opts + self.opt_space + self.grammar + self.env_exit
+        self.env.addParseAction(EnvHandler)
+        self.keyword = self.env_entry | self.env_exit
+        self.struct = self.pyexpr | self.str_pyexpr | self.env
+        self.char = ~self.keyword + ~self.struct + pp.Regex(r'[\s\S]')
+        self.chars = pp.OneOrMore(self.char)
+        self.txt = pp.Combine(self.chars)
+        self.txt.addParseAction(TxtHandler)
+        self.struct.leaveWhitespace()
+        self.txt.leaveWhitespace()
+        self.element = self.struct | self.txt
+        self.grammar << pp.ZeroOrMore(self.element)
+        self.grammar.addParseAction(GrammarHandler)
 
-    Returns:
-        str: the evaluated document.
-
-    """
-
-    frags = split(code, config.env_regex)
-    frags = list(map(lambda expr: eval_expr(expr, context, config=config), frags))
-    matches = list(re.finditer(config.env_regex, code))
-
-    for i, match in enumerate(matches):
-        content = match.group(config.ENV_CONTENT_TAG)
-        namespace = match.group(config.NS_TAG)
-        options = parse_options(match.group(config.OPT_TAG))
-
-        frags.insert(2 * i + 1, eval_env(content, namespace, context, config=config, **options))
-
-    return str().join(frags)
-
-
-
+    def eval(self, template, context, config=Config):
+        toks = self.grammar.parseString(template)
+        ast = toks[0]
+        return ast.eval(context, config)
