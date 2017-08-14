@@ -31,5 +31,5 @@ def getopt(parser, section, key, default):
             return parser[section][key]
         else:
             return parser.get(section, key)
-    except KeyError:
+    except:
         return default
