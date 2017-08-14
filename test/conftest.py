@@ -1,5 +1,5 @@
-import os.path
 import pytest
+import os.path
 
 from latest.config import create_config
 
@@ -30,15 +30,9 @@ def non_existing_config(non_existing_config_file):
     return create_config(non_existing_config_file)
 
 
-@pytest.fixture(scope = 'session', params=[
-    ('data.yaml', 'yaml'),
-#    ('data.yml', 'yml'),
-#    ('data.json', 'json'),
-#    ('data.txt', config(config_file(res_dir())).default_data_fmt),
-#    ('data', config(config_file(res_dir())).default_data_fmt),
+@pytest.fixture(scope='session', params=[
+    'data.yml',
+    'data.json',
 ])
-def data_file(request, config, res_dir):
-    return (os.path.join(res_dir, request.param[0]), request.param[1])
-
-
-
+def data_file(request, res_dir):
+    return os.path.join(res_dir, request.param)

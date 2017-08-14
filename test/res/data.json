@@ -1,24 +1,15 @@
 {
-    "title": "Testing latest",
-    "author": "Flavio Grandin",
-    "date": "Today",
-    "content": {
-        "x": 3,
-        "primes": [
-            {"n": 2},
-            {"n": 3},
-            {"n": 5},
-            {"n": 7},
-            {"n": 11}
-        ],
-        "fibonacci": [
-            1,
+    "meta": "Testing latest...",
+    "data": {
+        "scalar": 3,
+        "vector": [
             1,
             2,
-            3,
-            5,
-            8,
-            13
-        ]
+            3
+        ],
+        "tensor": {
+            "true": 1,
+            "false": 0
+        }
     }
 }

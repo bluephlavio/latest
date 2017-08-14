@@ -1,10 +1,10 @@
-title: Testing latest
-content:
+meta: Testing latest...
+data:
   scalar: 3
   vector:
     - 1
     - 2
     - 3
   tensor:
-    x: 0
-    y: 1
+    'true': 1
+    'false': 0

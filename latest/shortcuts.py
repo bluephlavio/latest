@@ -1,20 +1,19 @@
 """:mod:`shortcuts` module contains shortcut functions built upon core functionality of :mod:`latest` package.
 
-
 """
 
-from .util import load_data, contextify
+import yaml
+
 from .config import config as Config
 from .core import Grammar
 
 
-def render(template_filename, data_filename, config=Config, data_fmt=None):
+def render(template_filename, data_filename, config=Config):
     """Render a template in a file within a context defined by a *json* or *yaml* formatted data file.
 
     Args:
         template_filename (str): the path of the template file.
-        data_filename (str): the path of the data .yaml file.
-        data_fmt (str): format of data file; accepted: *json*, *yaml* (or *yml*).
+        data_filename (str): the path of the *json* or *yaml* data file.
         config (config._Config): configuration object.
 
     Returns:
@@ -25,9 +24,7 @@ def render(template_filename, data_filename, config=Config, data_fmt=None):
     with open(template_filename, 'r') as f:
         template = f.read()
 
-    context = load_data(data_filename, data_fmt, config.default_data_fmt)
+    with open(data_filename, 'r') as f:
+        context = yaml.load(f)
 
     return Grammar(config).eval(template, context)
-
-
-

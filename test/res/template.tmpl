@@ -1,23 +1,23 @@
 \documentclass{article}
 
-\title{\latest{$ title $}}
+\title{\latest{$ meta $}}
 
 \begin{document}
 \begin{latest}{$ False $}It doesn't exist\end{latest}
-\begin{latest}{$ content $}
+\begin{latest}{$ data $}
 x = \latest{$ scalar $} so that $x^2$ = \latest{$ scalar**2 $}.
 \end{latest}
 \begin{itemize}
-\begin{latest}{$ content.vector $}[join={$ '\n' $}]
-\item \latest{$ _index $}. \latest{$ _value $}
+\begin{latest}{$ [{'i': i, 'v': v} for i, v in enumerate(data.vector)] $}[join={$ '\n' $}]
+\item index = \latest{$ i $}, value = \latest{$ v $}
 \end{latest}
-\begin{latest}{$ content.tensor $}[join={$ '\n' $}]
-x = \latest{$ x $} and y = \latest{$ y $}
+\begin{latest}{$ data.tensor $}[join={$ '\n' $}]
+true = \latest{$ true $} and false = \latest{$ false $}
 \end{latest}
-\begin{latest}{$ content $}
+\begin{latest}{$ data $}
 \begin{latest}{$ tensor $}
 Testing nested structures:
-x = \latest{$ x $} and y = \latest{$ y $}
+true = \latest{$ true $} and false = \latest{$ false $}
 \end{latest}
 \end{latest}
 \end{itemize}

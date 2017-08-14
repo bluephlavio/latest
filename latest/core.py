@@ -2,19 +2,39 @@
 
 """
 
-import copy
 import pyparsing as pp
 
-from .util import *
+from .util import is_scalar, is_vector
 from .config import config as Config
-from .exceptions import *
+from .exceptions import PyExprSyntaxError, ContextError
+
+
+class Context(dict):
+
+    def __init__(self, *args, **kwargs):
+        super(self.__class__, self).__init__(*args, **kwargs)
+        self.__dict__ = self
+
+
+def contextify(obj):
+
+    if is_scalar(obj):
+        return obj
+    elif is_vector(obj):
+        return [contextify(o) for o in obj]
+    elif isinstance(obj, dict):
+        return Context(dict((k, contextify(v)) for k, v in obj.items()))
+    else:
+        return obj
+
+
+def listify(context):
+    return context if is_vector(context) else [context]
 
 
 class ParserHandler(object):
 
-    def __init__(self, s, loc, toks):
-        self.s = s
-        self.loc = loc
+    def __init__(self, toks):
         self.toks = toks
         if hasattr(self, 'initialize'):
             self.initialize()
@@ -37,7 +57,12 @@ class PyExprHandler(ParserHandler):
         self.pyexpr = self.toks[0]
 
     def eval(self, context):
-        return eval(self.pyexpr, context)
+        try:
+            return eval(self.pyexpr, context)
+        except NameError:
+            raise ContextError
+        except SyntaxError:
+            raise PyExprSyntaxError
 
 
 class StrPyExprHandler(ParserHandler):
@@ -95,6 +120,7 @@ class TxtHandler(ParserHandler):
 class Grammar(object):
 
     def __init__(self, config=Config):
+        self.config = config
         self.grammar = pp.Forward()
         self.pyexpr_entry = pp.Regex(config.pyexpr_entry).suppress()
         self.pyexpr_exit = pp.Regex(config.pyexpr_exit).suppress()
@@ -130,7 +156,7 @@ class Grammar(object):
         self.grammar << pp.ZeroOrMore(self.element)
         self.grammar.addParseAction(GrammarHandler)
 
-    def eval(self, template, context, config=Config):
+    def eval(self, template, context):
         toks = self.grammar.parseString(template)
         ast = toks[0]
-        return ast.eval(context, config)
+        return ast.eval(context, self.config)
