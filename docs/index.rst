@@ -9,17 +9,19 @@ Welcome to latest
 
 ``latest`` | *A* :math:`\LaTeX`-*oriented template engine*
 
-latest is lightweight templating engine for Python, designed for model documents. It has a simple, :math:`\LaTeX`-compatible but completely customizable syntax.
+:mod:`latest` is lightweight templating engine for Python, designed for model documents
+separating the presentation from the data.
+It has a simple, configurable, :math:`\LaTeX`-compatible syntax.
 
-.. literalinclude:: ../test/res/template.tmpl
+.. literalinclude:: ../test/res/lightweight.tmpl
    :language: latex
 
 
 **Features:**
 
+* command line tool
 * :math:`\LaTeX`-compatible
-* customizable syntax
-* lists without loops
+* configurable syntax
 
 
 Documentation

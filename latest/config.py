@@ -21,8 +21,8 @@ The formatting of a configuration file must be :code:`ini` format.
 
 Useful sections of a configuration file are:
 
-    * **general**
-    * **lang**
+    * general
+    * lang
 
 The section *lang* of a configuration file is where one can define its own syntax.
 Available options in `lang` section are:
