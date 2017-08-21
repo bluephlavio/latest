@@ -2,9 +2,10 @@
 
 """
 
+import copy
 import pyparsing as pp
 
-from .util import is_scalar, is_vector
+from .util import is_scalar, is_vector, is_tensor
 from .config import config as Config
 from .exceptions import PyExprSyntaxError, ContextError
 
@@ -14,6 +15,10 @@ class Context(dict):
     def __init__(self, *args, **kwargs):
         super(self.__class__, self).__init__(*args, **kwargs)
         self.__dict__ = self
+
+
+def listify(obj):
+    return obj if is_vector(obj) else [obj]
 
 
 def contextify(obj):
@@ -28,8 +33,13 @@ def contextify(obj):
         return obj
 
 
-def listify(context):
-    return context if is_vector(context) else [context]
+def resolve_context(glob, loc):
+    if isinstance(loc, dict) or not loc:
+        return loc
+    elif is_vector(loc):
+        return [ns if isinstance(ns, dict) else glob for ns in loc]
+    else:
+        return glob
 
 
 class ParserHandler(object):
@@ -46,7 +56,7 @@ class GrammarHandler(ParserHandler):
         if context:
             join = options.get('join', config.join)
             ctx = contextify(listify(context))
-            return join.join([''.join(tok.eval(ns) for tok in self.toks) for ns in ctx])
+            return join.join(''.join(tok.eval(ns) for tok in self.toks) for ns in ctx)
         else:
             return str()
 
@@ -58,7 +68,7 @@ class PyExprHandler(ParserHandler):
 
     def eval(self, context):
         try:
-            return eval(self.pyexpr, context)
+            return eval(self.pyexpr, contextify(context))
         except NameError:
             raise ContextError
         except SyntaxError:
@@ -98,12 +108,10 @@ class OptsHandler(ParserHandler):
 class EnvHandler(ParserHandler):
 
     def initialize(self):
-        self.context = self.toks[0]
-        self.options = self.toks[1]
-        self.content = self.toks[2]
+        self.context, self.options, self.content = self.toks
 
     def eval(self, context):
-        ctx = self.context.eval(context)
+        ctx = resolve_context(context, self.context.eval(context))
         opts = self.options.eval(context)
         return self.content.eval(ctx, **opts)
 
