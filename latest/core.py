@@ -2,10 +2,9 @@
 
 """
 
-import copy
 import pyparsing as pp
 
-from .util import is_scalar, is_vector, is_tensor
+from .util import is_scalar, is_vector
 from .config import config as Config
 from .exceptions import PyExprSyntaxError, ContextError
 
@@ -55,8 +54,8 @@ class GrammarHandler(ParserHandler):
     def eval(self, context, config=Config, **options):
         if context:
             join = options.get('join', config.join)
-            ctx = contextify(listify(context))
-            return join.join(''.join(tok.eval(ns) for tok in self.toks) for ns in ctx)
+            ctx = listify(context)
+            return join.join(str().join(tok.eval(ns) for tok in self.toks) for ns in ctx)
         else:
             return str()
 
@@ -153,7 +152,7 @@ class Grammar(object):
         self.env = self.env_entry + self.pyexpr + self.opts + self.opt_space + self.grammar + self.env_exit
         self.env.addParseAction(EnvHandler)
         self.keyword = self.env_entry | self.env_exit
-        self.struct = self.pyexpr | self.str_pyexpr | self.env
+        self.struct = self.str_pyexpr | self.env
         self.char = ~self.keyword + ~self.struct + pp.Regex(r'[\s\S]')
         self.chars = pp.OneOrMore(self.char)
         self.txt = pp.Combine(self.chars)

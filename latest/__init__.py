@@ -3,5 +3,5 @@
 """
 
 __project__ = 'latest'
-__release__ = '0.3.1'
+__release__ = '0.3.2'
 __version__ = '.'.join(__release__.split('.')[:2])
