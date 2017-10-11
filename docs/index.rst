@@ -17,7 +17,8 @@ It has a simple, configurable, :math:`\LaTeX`-compatible syntax.
    :language: latex
 
 
-**Features:**
+Features
+--------
 
 * command line tool
 * :math:`\LaTeX`-compatible

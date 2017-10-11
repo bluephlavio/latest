@@ -27,7 +27,7 @@ class Tox(TestCommand):
 
 setup(
     name=latest.__project__,
-    version=latest.__version__,
+    version=latest.__release__,
     description='A LaTeX-oriented template engine.',
     long_description=long_description,
     author='Flavio Grandin',
