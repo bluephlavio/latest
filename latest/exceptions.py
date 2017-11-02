@@ -5,14 +5,26 @@
 
 class LatestError(Exception):
     """Base class for all :mod:`latest` exceptions."""
-    pass
+
+    def __init__(self, details):
+        self.details = details
+
+    def __str__(self):
+        return self.__class__.__name__ + ":\n\t" + self.details
 
 
 class PyExprSyntaxError(LatestError):
     """Exception raised when bad syntax code is parsed in a template."""
-    pass
+
+    def __init__(self, details):
+        super().__init__(details)
+        self.report = "Problems occurred trying to match the template with the context."
 
 
 class ContextError(LatestError):
     """Exception raised when context dictionary doesn't match names required by a template."""
-    pass
+
+    def __init__(self, details):
+        super().__init__(details)
+        self.report = "Problems occurred trying to parse the template."
+

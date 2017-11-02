@@ -2,20 +2,19 @@
 
 """
 
+import sys
 import argparse
 
 from .config import create_config
 from .config import config as Config
 from .shortcuts import render
+from .exceptions import ContextError, PyExprSyntaxError
 
 
 def main():
-    try:
-        args = parse_args()
-        output = process(args)
-        write(output, args)
-    except Exception as e:
-        print(e)
+    args = parse_args()
+    output = process(args)
+    write(output, args)
 
 
 def parse_args():
@@ -29,7 +28,12 @@ def parse_args():
 
 def process(args):
     config = create_config(config_file=args.config) if args.config else Config
-    return render(args.template, args.data, config=config)
+    try:
+        return render(args.template, args.data, config=config)
+    except (ContextError, PyExprSyntaxError) as e:
+        print(e, file=sys.stderr)
+        print("\n" + e.report, file=sys.stderr)
+        sys.exit(-1)
 
 
 def write(output, args):
