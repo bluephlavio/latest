@@ -68,7 +68,7 @@ class PyExprHandler(ParserHandler):
     def eval(self, context):
         try:
             return eval(self.pyexpr, contextify(context))
-        except (NameError, AttributeError) as e:
+        except (NameError, AttributeError, TypeError) as e:
             raise ContextError(e.__str__())
         except SyntaxError as e:
             raise PyExprSyntaxError(e.text)

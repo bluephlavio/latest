@@ -18,7 +18,7 @@ class PyExprSyntaxError(LatestError):
 
     def __init__(self, details):
         super(self.__class__, self).__init__(details)
-        self.report = "Problems occurred trying to match the template with the context."
+        self.report = "Problems occurred trying to parse the template."
 
 
 class ContextError(LatestError):
@@ -26,5 +26,7 @@ class ContextError(LatestError):
 
     def __init__(self, details):
         super(self.__class__, self).__init__(details)
-        self.report = "Problems occurred trying to parse the template."
+        self.report = "Problems occurred trying to match the template with the context."
+
+
 
