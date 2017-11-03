@@ -65,7 +65,7 @@ By default, the syntax is::
 Creating a template
 -------------------
 
-A template file can be of any type but :mod:`latest` searches in it for mod:`latest` **commands** and **enviroments**.
+A template file can be of any type but :mod:`latest` searches in it for :mod:`latest` **commands** and **enviroments**.
 
 
 Creating a data file
@@ -80,7 +80,7 @@ Data formats supported by :mod:`latest` are
 The latest cli
 --------------
 
-Run mod:`latest` script from the command line:: bash
+Run :mod:`latest` script from the command line:: bash
 
     $ latest template data
 
