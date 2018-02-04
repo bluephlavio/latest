@@ -39,8 +39,8 @@ setup(
         'test': Tox
     },
     install_requires=[
-        'pyyaml',
-        'pyparsing',
+        'pyparsing>=2.2.0',
+        'pyyaml>=3.12',
     ],
     include_package_data=True,
     license='MIT',

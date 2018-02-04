@@ -1,2 +1,3 @@
-PyYAML
-pyparsing
+latest==0.4.1
+pyparsing==2.2.0
+pyyaml==3.12
