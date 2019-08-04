@@ -25,6 +25,6 @@ def render(template_filename, data_filename, config=Config):
         template = f.read()
 
     with open(data_filename, 'r') as f:
-        context = yaml.load(f)
+        context = yaml.load(f, Loader=yaml.FullLoader)
 
     return Grammar(config).eval(template, context)
