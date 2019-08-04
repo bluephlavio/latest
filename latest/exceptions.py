@@ -20,7 +20,8 @@ class PyExprSyntaxError(LatestError):
 
 
 class ContextError(LatestError):
-    """Exception raised when context dictionary doesn't match names required by a template."""
+    """Exception raised when context dictionary doesn't match names required by
+    a template."""
     def __init__(self, details):
         super(self.__class__, self).__init__(details)
         self.report = "Problems occurred trying to match the template with the context."

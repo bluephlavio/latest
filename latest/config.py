@@ -70,7 +70,7 @@ class _Config(object):
             self.set_defaults()
 
     def set_defaults(self):
-        for section, key, default in self._OPTIONS:
+        for _, key, default in self._OPTIONS:
             setattr(self, key, default)
 
     def read(self, filename):

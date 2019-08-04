@@ -9,7 +9,8 @@ from .core import Grammar
 
 
 def render(template_filename, data_filename, config=Config):
-    """Render a template in a file within a context defined by a *json* or *yaml* formatted data file.
+    """Render a template in a file within a context defined by a *json* or
+    *yaml* formatted data file.
 
     Args:
         template_filename (str): the path of the template file.
@@ -18,7 +19,6 @@ def render(template_filename, data_filename, config=Config):
 
     Returns:
         str: the output of the evaluation process as defined by :mod:`latest` core functions.
-
     """
 
     with open(template_filename, 'r') as f:
