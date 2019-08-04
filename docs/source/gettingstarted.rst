@@ -5,32 +5,41 @@ Getting Started
 Basic Syntax
 ------------
 
-With :math:`\LaTeX` syntax in mind, :mod:`latest` defines a **command** and an **environment**.
-But, first of all, let's see how to leverage all the power of python in a template.
+With :math:`\LaTeX` syntax in mind, :mod:`latest` defines a
+**command** and an **environment**.
+But, first of all, let's see how to leverage all the power of
+python in a template.
 
 Python expressions
 ::::::::::::::::::
 
-You can include a python expression within a template. By default, the syntax is::
+You can include a python expression within a template.
+By default, the syntax is::
 
    {$ python expression $}
 
-A python expression returns a python object, so if you want a string instead, you can use the :mod:`latest` **command**.
-For more complex tasks involving some logic like *for loops* or *conditionals* you can refer to
+A python expression returns a python object, so if you want a string instead,
+you can use the :mod:`latest` **command**.
+For more complex tasks involving some logic like *for loops* or *conditionals*
+you can refer to
 :mod:`latest` **environment**.
 
 Contexts
 ::::::::
 
-An expression needs a context (like a python dictionary) to be evaluated. A context is generally provided globally
-for a template. This context object is passed to every python expression, command or environment in the template.
-However, commands and environments can modify the context to work with in their content.
+An expression needs a context (like a python dictionary) to be evaluated.
+A context is generally provided globally for a template.
+This context object is passed to every python expression,
+command or environment in the template.
+However, commands and environments can modify the context
+to work with in their content.
 
 
 Commands
 ::::::::
 
-The :mod:`latest` command let you automatically convert to a string the output of a python expression.
+The :mod:`latest` command let you automatically convert to a string
+the output of a python expression.
 By default, the syntax is::
 
    \latest[options]{$ python expression $}
@@ -47,10 +56,12 @@ with a data context :code:`{'a': 1, 'b': 2}` evaluates to::
 Environments
 ::::::::::::
 
-A :mod:`latest` environment allow us to change the globally defined context. This can be useful for many purposes
+A :mod:`latest` environment allow us to change the globally defined context.
+This can be useful for many purposes
 depending on the context provided:
 
-*  :code:`dict` context: to ease the access to names in the context for the python expressions, commands, or enviroments nested inside the
+*  :code:`dict` context: to ease the access to names in the context
+   for the python expressions, commands, or enviroments nested inside the
    environment
 *  :code:`boolean` context: to provide a conditional functionality
 *  :code:`list` context: to provide a loop functionality
@@ -65,7 +76,8 @@ By default, the syntax is::
 Creating a template
 -------------------
 
-A template file can be of any type but :mod:`latest` searches in it for :mod:`latest` **commands** and **enviroments**.
+A template file can be of any type but :mod:`latest` searches in it for
+:mod:`latest` **commands** and **enviroments**.
 
 
 Creating a data file
@@ -85,7 +97,7 @@ Run :mod:`latest` script from the command line:: bash
     $ latest template data
 
 
-where 
+where
 
     * **template** is the path to a template file
     * **data** is the path to a *json* or *yaml* formatted data file.

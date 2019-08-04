@@ -13,9 +13,9 @@ Run `latest` script from the command line
     latest template data
 
 
-where 
+where
 
-    * `template` is the path to a template file and 
+    * `template` is the path to a template file and
     * `data` is the path to a yaml formatted data file.
 
 
