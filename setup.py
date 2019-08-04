@@ -40,11 +40,11 @@ setup(
     },
     install_requires=[
         'pyparsing>=2.2.0',
-        'pyyaml>=3.12',
+        'pyyaml>=5.0.0',
     ],
     include_package_data=True,
     license='MIT',
-    url='https://github.com/bluePhlavio/latest',
+    url='https://github.com/bluephlavio/latest',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -52,9 +52,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
