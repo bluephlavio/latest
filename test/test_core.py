@@ -1,7 +1,8 @@
 import pytest
 import yaml
 
-from latest.core import *
+from latest.core import Grammar, contextify
+from latest.exceptions import PyExprSyntaxError, ContextError
 
 
 @pytest.fixture(scope='module')
@@ -12,7 +13,7 @@ def grammar():
 @pytest.fixture(scope='module')
 def context(data_file):
     with open(data_file, 'r') as f:
-        data = yaml.load(f)
+        data = yaml.load(f, Loader=yaml.FullLoader)
         return contextify(data)
 
 

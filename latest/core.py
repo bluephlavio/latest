@@ -11,7 +11,7 @@ from .exceptions import PyExprSyntaxError, ContextError
 
 class Context(dict):
     def __init__(self, *args, **kwargs):
-        super(self.__class__, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__dict__ = self
 
 
@@ -44,6 +44,7 @@ class ParserHandler(object):
     def __init__(self, toks):
         self.toks = toks
         if hasattr(self, 'initialize'):
+            # pylint: disable-next
             self.initialize()
 
 

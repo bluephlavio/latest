@@ -15,7 +15,7 @@ class LatestError(Exception):
 class PyExprSyntaxError(LatestError):
     """Exception raised when bad syntax code is parsed in a template."""
     def __init__(self, details):
-        super(self.__class__, self).__init__(details)
+        super().__init__(details)
         self.report = "Problems occurred trying to parse the template."
 
 
@@ -23,5 +23,5 @@ class ContextError(LatestError):
     """Exception raised when context dictionary doesn't match names required by
     a template."""
     def __init__(self, details):
-        super(self.__class__, self).__init__(details)
+        super().__init__(details)
         self.report = "Problems occurred trying to match the template with the context."
