@@ -1,3 +1,6 @@
+# venv
+venv/
+
 # packages/installer info
 *.egg
 .eggs/
@@ -13,11 +16,15 @@ __pycache__
 *.py[cod]
 *.o
 *.so
+.pytest_cache
 
 # sphinx
 docs/_build
 docs/_temaplate
 docs/_static
+
+# vscode
+.vscode/
 
 # pycharm
 .idea
