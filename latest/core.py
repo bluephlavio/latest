@@ -10,7 +10,6 @@ from .exceptions import PyExprSyntaxError, ContextError
 
 
 class Context(dict):
-
     def __init__(self, *args, **kwargs):
         super(self.__class__, self).__init__(*args, **kwargs)
         self.__dict__ = self
@@ -42,7 +41,6 @@ def resolve_context(glob, loc):
 
 
 class ParserHandler(object):
-
     def __init__(self, toks):
         self.toks = toks
         if hasattr(self, 'initialize'):
@@ -50,18 +48,17 @@ class ParserHandler(object):
 
 
 class GrammarHandler(ParserHandler):
-
     def eval(self, context, config=Config, **options):
         if context:
             join = options.get('join', config.join)
             ctx = listify(context)
-            return join.join(str().join(tok.eval(ns) for tok in self.toks) for ns in ctx)
+            return join.join(str().join(tok.eval(ns) for tok in self.toks)
+                             for ns in ctx)
         else:
             return str()
 
 
 class PyExprHandler(ParserHandler):
-
     def initialize(self):
         self.pyexpr = self.toks[0]
 
@@ -75,7 +72,6 @@ class PyExprHandler(ParserHandler):
 
 
 class StrPyExprHandler(ParserHandler):
-
     def initialize(self):
         self.pyexpr = self.toks[0]
 
@@ -85,18 +81,20 @@ class StrPyExprHandler(ParserHandler):
 
 
 class OptHandler(ParserHandler):
-
     def initialize(self):
         self.key = self.toks[0]
         self.value = self.toks[1]
 
-    def eval(self, context,):
-        key, value = self.key, self.value.eval(context) if hasattr(self.value, 'eval') else self.value
+    def eval(
+            self,
+            context,
+    ):
+        key, value = self.key, self.value.eval(context) if hasattr(
+            self.value, 'eval') else self.value
         return (key, value)
 
 
 class OptsHandler(ParserHandler):
-
     def initialize(self):
         self.opts = self.toks
 
@@ -105,7 +103,6 @@ class OptsHandler(ParserHandler):
 
 
 class EnvHandler(ParserHandler):
-
     def initialize(self):
         self.context, self.options, self.content = self.toks
 
@@ -116,7 +113,6 @@ class EnvHandler(ParserHandler):
 
 
 class TxtHandler(ParserHandler):
-
     def initialize(self):
         self.txt = self.toks[0]
 
@@ -125,13 +121,13 @@ class TxtHandler(ParserHandler):
 
 
 class Grammar(object):
-
     def __init__(self, config=Config):
         self.config = config
         self.grammar = pp.Forward()
         self.pyexpr_entry = pp.Regex(config.pyexpr_entry).suppress()
         self.pyexpr_exit = pp.Regex(config.pyexpr_exit).suppress()
-        self.pyexpr = self.pyexpr_entry + pp.SkipTo(self.pyexpr_exit) + self.pyexpr_exit
+        self.pyexpr = self.pyexpr_entry + pp.SkipTo(
+            self.pyexpr_exit) + self.pyexpr_exit
         self.pyexpr.addParseAction(PyExprHandler)
         self.opt_key = pp.Word(pp.alphas)
         self.opt_value = self.pyexpr | pp.Word(pp.alphas)
@@ -140,10 +136,12 @@ class Grammar(object):
         self.opts_list = pp.delimitedList(self.opt, delim=',')
         self.opts_entry = pp.Regex(config.opts_entry).suppress()
         self.opts_exit = pp.Regex(config.opts_exit).suppress()
-        self.opts = pp.Optional(self.opts_entry + self.opts_list + self.opts_exit)
+        self.opts = pp.Optional(self.opts_entry + self.opts_list +
+                                self.opts_exit)
         self.opts.addParseAction(OptsHandler)
         self.str_pyexpr_entry = pp.Regex(config.str_pyexpr_entry).suppress()
-        self.str_pyexpr_exit = pp.Regex(config.str_pyexpr_exit).suppress() if config.str_pyexpr_exit else pp.Empty()
+        self.str_pyexpr_exit = pp.Regex(config.str_pyexpr_exit).suppress(
+        ) if config.str_pyexpr_exit else pp.Empty()
         self.str_pyexpr = self.str_pyexpr_entry + self.pyexpr + self.str_pyexpr_exit
         self.str_pyexpr.addParseAction(StrPyExprHandler)
         self.opt_space = pp.Optional(pp.Regex(r'\s')).suppress()

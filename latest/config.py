@@ -43,7 +43,6 @@ except ImportError:
 import latest
 from .util import path, getopt
 
-
 _BASE_DIR = path('~/.' + latest.__project__ + '/')
 _CONFIG_FILE = os.path.join(_BASE_DIR, latest.__project__ + 'cfg')
 _TEMPLATES_DIR = os.path.join(_BASE_DIR, 'templates/')
@@ -62,8 +61,7 @@ class _Config(object):
         ('lang', 'str_pyexpr_entry', r'\\latest'),
         ('lang', 'str_pyexpr_exit', None),
         ('lang', 'env_entry', r'\\begin\{latest\}'),
-        ('lang', 'env_exit', r'\\end\{latest\}')
-    )
+        ('lang', 'env_exit', r'\\end\{latest\}'))
 
     def __init__(self, config_file=None):
         if config_file:
@@ -91,5 +89,6 @@ class _Config(object):
 
 def create_config(config_file=None):
     return _Config(config_file)
+
 
 config = _Config(config_file=_CONFIG_FILE)

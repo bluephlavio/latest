@@ -14,7 +14,8 @@ def is_scalar(obj):
 
 
 def is_vector(obj):
-    return isinstance(obj, (set, frozenset, tuple, list)) and (not is_scalar(obj))
+    return isinstance(obj,
+                      (set, frozenset, tuple, list)) and (not is_scalar(obj))
 
 
 def is_tensor(obj):
