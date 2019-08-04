@@ -1,7 +1,7 @@
-from setuptools import setup
-from setuptools.command.test import test as TestCommand
 import os.path
 import sys
+from setuptools import setup
+from setuptools.command.test import test as TestCommand
 
 import latest
 
@@ -21,8 +21,8 @@ class Tox(TestCommand):
 
     def run_tests(self):
         import tox
-        errcode = tox.cmdline(self.test_args)
-        sys.exit(errcode)
+        tox.cmdline(self.test_args)
+        sys.exit(1)
 
 
 setup(
@@ -35,7 +35,7 @@ setup(
     tests_require=[
         'tox',
     ],
-    cmdclass = {
+    cmdclass={
         'test': Tox
     },
     install_requires=[
@@ -46,7 +46,7 @@ setup(
     license='MIT',
     url='https://github.com/bluePhlavio/latest',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
@@ -57,6 +57,7 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         ],
     keywords='latex template engine',
     packages=['latest'],
@@ -64,5 +65,3 @@ setup(
         'console_scripts': ['latest=latest.__main__:main'],
     },
 )
-
-
