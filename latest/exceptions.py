@@ -6,6 +6,7 @@
 class LatestError(Exception):
     """Base class for all :mod:`latest` exceptions."""
     def __init__(self, details):
+        super().__init__(details)
         self.details = details
 
     def __str__(self):

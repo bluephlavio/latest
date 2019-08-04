@@ -44,7 +44,6 @@ class ParserHandler(object):
     def __init__(self, toks):
         self.toks = toks
         if hasattr(self, 'initialize'):
-            # pylint: disable-next
             self.initialize()
 
 
