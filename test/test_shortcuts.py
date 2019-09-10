@@ -1,7 +1,8 @@
 import os.path
 import pytest
+import yaml
 
-from latest.shortcuts import *
+from latest.shortcuts import render
 
 
 @pytest.fixture
@@ -21,4 +22,8 @@ def expected(expected_file):
 
 
 def test_render(template_file, data_file, expected):
-    assert render(template_file, data_file) == expected
+    with open(template_file, 'r') as f:
+        template = f.read()
+    with open(data_file, 'r') as f:
+        context = yaml.load(f, Loader=yaml.FullLoader)
+    assert render(template, context) == expected

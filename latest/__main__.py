@@ -6,6 +6,7 @@ from __future__ import print_function
 
 import sys
 import argparse
+import yaml
 
 from .config import create_config
 from .config import config as Config
@@ -37,7 +38,11 @@ def parse_args():
 def process(args):
     config = create_config(config_file=args.config) if args.config else Config
     try:
-        return render(args.template, args.data, config=config)
+        with open(args.template, 'r') as f:
+            template = f.read()
+        with open(args.data, 'r') as f:
+            data = yaml.load(f, Loader=yaml.FullLoader)
+        return render(template, data, config=config)
     except (ContextError, PyExprSyntaxError) as e:
         print(e, file=sys.stderr)
         print("\n" + e.report, file=sys.stderr)

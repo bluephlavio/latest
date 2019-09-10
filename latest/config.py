@@ -40,11 +40,10 @@ try:
 except ImportError:
     import ConfigParser as configparser
 
-import latest
 from .util import path, getopt
 
-_BASE_DIR = path('~/.' + latest.__project__ + '/')
-_CONFIG_FILE = os.path.join(_BASE_DIR, latest.__project__ + 'cfg')
+_BASE_DIR = path('~/.latest/')
+_CONFIG_FILE = os.path.join(_BASE_DIR, 'latest.cfg')
 _TEMPLATES_DIR = os.path.join(_BASE_DIR, 'templates/')
 
 
